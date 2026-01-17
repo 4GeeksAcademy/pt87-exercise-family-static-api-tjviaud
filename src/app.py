@@ -16,23 +16,6 @@ CORS(app)
 # Create the jackson family object
 jackson_family = FamilyStructure("Jackson")
 
-jackson_family.add_member({
-    "first_name": "John",
-    "age": 33,
-    "lucky_numbers": [7, 13, 22]
-})
-
-jackson_family.add_member({
-    "first_name": "Jane",
-    "age": 35,
-    "lucky_numbers": [10, 14, 3]
-})
-
-jackson_family.add_member({
-    "first_name": "Jimmy",
-    "age": 5,
-    "lucky_numbers": [1]
-})
 
 
 # Handle/serialize errors like a JSON object
@@ -53,12 +36,12 @@ def get_all_members():
     members = jackson_family.get_all_members()
     return jsonify(members), 200
 
-@app.route('/members/<int:member_id>', methods=['GET'])
-def get_single_member(member_id):
-    member = jackson_family.get_member(member_id)
+@app.route('/members/<int:id>', methods=['GET'])
+def get_single_member(id):
+    member = jackson_family.get_member(id)
 
-    if member is None:
-        raise APIException("Member not found", status_code=404)
+    # if member is None:
+    #     raise APIException("Member not found", status_code=404)
     
     return jsonify(member), 200
 
@@ -72,14 +55,14 @@ def add_member():
     new_member = jackson_family.add_member(body)
     return jsonify(new_member), 200
 
-app.route('/members/<int:member_id>', methods=['DELETE'])
+@app.route('/members/<int:member_id>', methods=['DELETE'])
 def delete_member(member_id):
     deleted = jackson_family.delete_member(member_id)
 
     if not deleted:
         raise APIException("Member not found", status_code=404)
     
-    return jsonify({"done": True}), 200
+    return jsonify({"done": True, "member": deleted}), 200
     
 
 
